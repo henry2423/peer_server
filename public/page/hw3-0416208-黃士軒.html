@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>2048 Game</title>
+	<style type="text/css">
+
+
+		body {
+			text-align: center;
+			box-sizing: content-box;
+			font-size: 25px;
+			font-family:Helvetica;
+			background-color: #FAF8EF;
+		}
+
+		.head{
+			width: 500px;
+   			margin: 0 auto;
+   			padding-bottom : 20px;
+   			padding-top : 10px;
+		}
+
+		header{
+			color: #776E65;
+			font-weight: bold;
+			font-family:Helvetica; 
+			text-align: left;
+			font-size:75px;
+		}
+
+		.head p{
+			color: #776E65;
+			font-family:Helvetica;
+			text-align: left; 
+			font-size:18px;
+			margin : 0px;
+		}
+
+		table td{
+			text-align: center;
+		}	
+
+		table {
+			width: auto;
+			height: auto;
+			display: inline-block;
+			margin: auto;
+			//border: solid 2px #0080FF;
+			background-color: #b7ad9f;
+			border-spacing: 20px;
+			border-radius: 6px;
+			box-sizing: border-box;
+		}
+
+		td {
+			//border: solid 1px #66B3FF;
+			width: 100px;
+			height: 100px;
+			margin: 0.5px;
+			font-size: 48px;
+			font-family: Helvetica;
+			padding: 0 0;
+			background-color: #CCC0B4;
+			border-radius: 3px;
+		}
+		
+		#game_over{
+			font-family: Helvetica;
+			font-size: 40px;
+			margin-top: 5px;
+			margin-bottom: 0px;
+		}
+
+		#win_mesg{
+			font-family: Helvetica;
+			font-size: 40px;
+			margin-top: 5px;
+			margin-bottom: 0px;
+		}
+
+		#rest_btn {
+			margin-top: 8px;
+			font-family: Helvetica;
+			font-size: 18px;
+			position: relative;
+		}
+
+	</style>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+
+	<div class = "head">
+		<header>2048</header>
+
+		<p>Merge the number to get 2048</p>
+
+	</div>
+
+
+
+
+
+	<script type="text/javascript">
+		const KEYBOARD = {
+			LEFT : 37,
+			RIGHT : 39,
+			UP : 38,
+			DOWN : 40
+		}
+		var tiles = new Array(16);
+		var vals = new Array(16);
+		var tile_colors = { "0":"#CCC0B4", "2":"#EEE4DB", "4":"#EDE0C9", "8":"#F1B17D", "16":"#F39568", "32":"#F47C63", "64":"#F45F43" , "128":"#ECCE78" , "256":"#ECCB69" , "512":"#ECCB69" , "1024":"#EDC53F", "2048":"#EDC22E"};
+
+
+		function getNew(){
+			var nullTiles = [];
+			for(var i=0; i<16; i++)
+			{
+				if(vals[i].data === ""){
+					nullTiles.push(i);	//找現在的空白列
+				}else if(vals[i].data == "2048"){  	//如果有2048了就顯示勝利 不再生成新方塊
+					$("#win_mesg").show();
+					return;
+				}
+			}
+
+			if(nullTiles.length == 1){
+				var i = nullTiles[Math.floor((Math.random()*nullTiles.length))]; //從空白中找隨機一個index
+				vals[i].data =  Math.random()>0.7? 4:2 ; //塞入2或4
+				//tiles[i].style.backgroundColor = tile_colors[vals[i].data];
+				draw();
+				check_lose();
+			}else {
+				var i = nullTiles[Math.floor((Math.random()*nullTiles.length))]; //從空白中找隨機一個index
+				vals[i].data =  Math.random()>0.7? 4:2 ; //塞入2或4
+				//tiles[i].style.backgroundColor = tile_colors[vals[i].data];
+				draw();
+			}
+		}
+
+		function check_lose(){
+			if(!still_merge_possible()){		//確認每個方向都不能merge
+				
+				$("#game_over").show();
+		    	$("#rest_btn").click(function(){
+		      	  	$("#game_over").hide();
+				init();
+		    	});
+				
+				return true;
+			}
+			return false;
+		}
+
+
+		function still_merge_possible(){	
+
+			//left merge
+			for(var i=0; i<16; i++){
+				if( i%4!=0 )
+				{
+					if(vals[i-1].data == vals[i].data)
+						return true;
+				}
+			}
+
+			//right merge
+			for(var i=15; i>=0; i--){
+				if( i%4!=3 )
+				{
+					if(vals[i+1].data == vals[i].data)
+						return true;
+				}
+			}
+
+			//up merge
+			for(var i=4; i<16; i++){
+				if(vals[i-4].data == vals[i].data)
+					return true;
+			}
+
+			//left merge
+			for(var i=11; i>=0; i--){
+				if(vals[i+4].data == vals[i].data)
+					return true;
+			}
+
+			return false;
+
+		}
+
+		function merge(destination, source){
+			if(destination.data === ""){
+				destination.data = source.data;
+				source.data = "";
+				return true;
+			}else if(source.data == destination.data){
+				destination.data = parseInt(destination.data)*2;
+				source.data = "";
+				return true;
+			}else {
+				return false;
+			}
+		}
+
+
+		function play(e){
+			e = e || window.event;
+			switch (e.which) {
+				case KEYBOARD.LEFT:
+					for(var i=0; i<16; i++){
+						var j = i;
+						while( j%4!=0 && merge(vals[j-1],vals[j]) )
+						{
+							 j--;
+						}
+					}
+					getNew();
+					draw();
+					break;
+				case KEYBOARD.RIGHT:
+					for(var i=15; i>=0; i--){
+						var j = i;
+						while( j%4!=3 && merge(vals[j+1],vals[j]) )
+						{
+							j++;
+						}
+					}
+					getNew();
+					draw();
+					break;
+				case KEYBOARD.UP:
+					for(var i=4; i<16; i++){
+						var j=i;
+						while( j>=4 && merge(vals[j-4],vals[j]) )
+						{
+							j-=4;
+						}
+					}
+					getNew();
+					draw();
+					break;
+				case KEYBOARD.DOWN:
+					for(var i=11; i>=0; i--){
+						var j=i;
+						while( j<12 && merge(vals[j+4],vals[j]) )
+						{
+							j+=4
+						}
+					}
+					getNew();
+					draw();
+					break;
+				default:
+					
+					break;
+			}
+		}
+
+		function draw(){
+			for(i=0; i<16; i++){
+				if(vals[i].data === ""){
+					tiles[i].style.backgroundColor = tile_colors[0];
+				} else {
+					tiles[i].style.backgroundColor = tile_colors[vals[i].data];
+				}
+			}
+		}
+		
+
+		function init(){
+
+			tiles = document.getElementsByTagName("td");
+			for(var i=0; i<16; i++)
+			{
+				vals[i] = tiles[i].firstChild;
+				vals[i].data = "";
+			}
+			getNew();
+			getNew();
+
+			$("#game_over").hide();
+			$("#win_mesg").hide();
+		}	
+
+
+		$(document).ready(function(){
+			$("#rest_btn").click(function(){
+				init();
+		    });
+		});
+
+
+		if(window.addEventListener){
+			window.addEventListener("load", init, false);
+			window.addEventListener("keydown", play, false);
+		} else if(window.attachEvent){
+			window.attachEvent("onload", init);
+			window.attachEvent("onkeydown",play);
+		} else {
+			window.onload = init;
+			window.onkeydown = play;
+		}	
+
+
+
+	</script>
+
+
+
+	<div>
+		<script type="text/javascript">
+			document.writeln("<table id=\"2048table\">");
+			for(var i=0; i<4; i++)
+			{
+				document.writeln("<tr>");
+				for(var j=0; j<4; j++)
+				{
+					document.writeln("<td id=\"box"+i+j+"\"> </td>");
+				}
+				document.writeln("</tr>");
+			}
+			document.writeln("</table>");
+
+
+		</script>
+
+	</div>
+
+	<p id ="game_over" > Game Over </p>
+	<p id ="win_mesg" > You Win </p>
+	<button id= "rest_btn" > Restart </button>
+
+		
+
+</body>
+
+</html>

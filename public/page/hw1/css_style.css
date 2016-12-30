@@ -1,0 +1,61 @@
+	header{
+		text-align:center;
+		font-family:Impact;
+		font-size: 30px;
+		margin: 15px auto;
+	}
+
+	nav{		
+		background-color: gray;
+		position: relative;
+		right: 0px;
+		left: 0px;
+		height: 30px;
+		overflow: hidden;	
+	}
+
+	td.menu_row{
+		font-size:20px;
+		font-family:Helvetica;
+		text-align:center;
+		cursor:pointer;
+	}
+	
+	a.amenu{
+		color: #D3D3D3;
+	}
+	a.amenu.sel{
+		color: #ffffff;
+	}
+	a.amenu:hover{
+		color: #ffffff;
+	}
+
+	.profile{
+		font-family:Helvetica;
+		float: left;
+		overflow: hidden;
+	}
+
+	.profile.photo{
+		position: relative;
+		top: 25px;
+		left: 22vw;	
+	}
+
+	.profile.aboutme{
+		position: relative;
+		left: 23vw;
+
+	}
+	
+
+	footer{
+		clear: both;
+	}
+
+	pre.footstyle{
+		position: relative;
+		font-family:Helvetica;
+		text-align: center;
+	}

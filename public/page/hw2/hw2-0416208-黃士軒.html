@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+	<meta charset="utf-8">
+	<title>Read My Mind</title>
+	<style type="text/css">
+		
+		body {
+			text-align: center;
+			box-sizing: content-box;
+			font-size: 25px;
+		}
+
+		table td{
+			text-align: center;
+			border: solid 1px #66B3FF;
+		}
+
+		table {
+			display: inline-block;
+			margin: 15px;
+			border: solid 2px #0080FF;
+		}
+
+		td {
+			margin: 0.5px;
+			font-size: 25px;
+			font-family: Helvetica;
+		}
+		.magicTable{
+			text-align: center;
+		}
+
+	</style>
+
+<body>
+
+	<header>
+		<p style= "font-family:Helvetica; text-align:center; font-size:40px;">Read My Mind</p>
+	</header>
+		<p style= "text-align:center; font-size:20px;">想一個數字從0-64，並且告訴我有哪些卡片含有這個數字，我就可以讀出你想的數字</p>
+	<botton>
+
+
+<script type="text/javascript">
+
+	magicboard();
+		
+	function magicboard(){
+		var i, j;
+		document.writeln("<div class=\"magicTable\">");
+		for(i=0; i<6; i++) 
+		{
+			document.writeln("<table><tr><td colspan=8>第 "
+				+(i+1) + "張 <input type=\"checkbox\" value=\"1\" id=\"a"+i+"\"/> </td></tr>"
+				);
+			for(j=0; j<32; j++) {
+				if(j%8 == 0)
+					document.writeln("<tr>");
+					var k = (j%Math.pow(2,i));
+					document.writeln("<td>"+((j-k)*2+Math.pow(2,i)+k)+"</td>");
+				if(j%8 == 7)
+					document.writeln("</tr>");
+			}
+			document.writeln("</table>")
+		}
+
+		document.writeln("</div>");
+
+		document.writeln("<input type=\"button\" value=\"猜出我的數字\" onclick=\"chkfalse()\"/>");
+		document.writeln("</form>");
+
+	}	
+
+	function chkfalse(){
+		
+		var a=document.getElementById('a0');
+		var b=document.getElementById('a1');
+		var c=document.getElementById('a2');
+		var d=document.getElementById('a3');
+		var e=document.getElementById('a4');
+		var f=document.getElementById('a5');
+
+		var ans=0;
+
+ 		if(a.checked) 
+ 			ans=1;
+
+ 		if(b.checked) 
+ 			ans = ans + 2;
+ 		 
+ 		if(c.checked) 
+			ans = ans + 4;
+
+ 		if(d.checked) 
+			ans = ans + 8;
+
+ 		if(e.checked) 
+ 			ans = ans + 16;
+
+ 		if(f.checked) 
+ 			ans = ans + 32;
+
+		alert("你想的是 "+ans);
+	}
+
+	document.getElementById(f);
+
+</script>
+
+		
+
+</body>
+
+</html>
